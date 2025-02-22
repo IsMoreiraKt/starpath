@@ -1,0 +1,23 @@
+#!/bin/sh
+
+function mount() {
+    if ! command -v as &> /dev/null; then
+        echo "gas could not be found"
+        exit
+    fi
+
+    as --32 starpath.S -o starpath.o
+    ld -Ttext 0x7c00 --oformat=binary -m elf_i386 starpath.o -o boot.bin
+}
+
+function run() {
+    if ! command -v qemu-system-i386 &> /dev/null; then
+        echo "qemu-system-i386 could not be found"
+        exit
+    fi
+
+    qemu-system-i386 -drive format=raw,file=boot.bin
+}
+
+mount
+run

@@ -1,0 +1,22 @@
+#!/bin/sh
+
+function mount() {
+    if ! command -v nasm &> /dev/null; then
+        echo "nasm could not be found"
+        exit
+    fi
+
+    nasm -f bin -o boot.bin starpath.asm
+}
+
+function run() {
+    if ! command -v qemu-system-i386 &> /dev/null; then
+        echo "qemu-system-i386 could not be found"
+        exit
+    fi
+
+    qemu-system-x86_64 -drive format=raw,file=boot.bin
+}
+
+mount
+run
